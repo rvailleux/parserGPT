@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chat Bot</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="/public/styles.css">
+  </head>
+  <body>
+    <ul class="chat-thread">
+      <li>Hi, can I do for you today?</li>
+    </ul>
+    
+    <form class="chat-window">
+      <input class="chat-window-message" name="question" id="question" type="text" autocomplete="off" autofocus  placeholder="Ask a question" />
+
+      <input type="hidden" name="userid" id="userid" value="001" >
+      
+      
+      <button type="submit">Send</button>
+
+    </form>
+    <script>
+      $(function() {
+        $(".chat-window").submit(function(e) {
+          e.preventDefault();
+          var question = $(".chat-window-message").val();
+          var userid = $("#userid").val();
+          $(".chat-window-message").val("");
+          $(".chat-thread").append("<li class='user'>" + question + "</li>");
+
+          $.get({url:"/answer", data: { question: question, userid: userid}, success: function(data) {
+
+            console.log(JSON.stringify(data))
+
+            //answer = JSON.parse(data.);
+
+            $(".chat-thread").append("<li class='bot'>" + data.answer.content + "</li>");
+           
+            console.log(JSON.stringify(data))
+          }});
+        });
+      });
+    </script>
+    <style>
+      #chatbox {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        max-height: 500px;
+        overflow-y: scroll;
+        border: 1px solid black;
+        padding: 10px;
+      }
+      .system {
+        font-weight: bold;
+      }
+      .user {
+        color: blue;
+      }
+      .bot {
+        color: green;
+      }
+    </style>
+  </body>
+</html>
