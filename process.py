@@ -16,7 +16,7 @@ debug = False
 
 try:
     argv = sys.argv[1:]
-    opts, args = getopt.getopt(argv,"hu:d",["url=", "debug"])
+    opts, args = getopt.getopt(argv,"hi:d",["inputdir=", "debug"])
 
     print(json.dumps(opts))
     print(json.dumps(args))
@@ -24,11 +24,12 @@ try:
 
     for opt, arg in opts:
         if opt == '-h':
-            print ('process.py -u <full_top_url>')
+            print ('process.py -i <path_to_directory>')
             sys.exit()
-        elif opt in ("-u", "--url"):
-            print("-u option detected : " + arg)
+        elif opt in ("-i", "--inputdir"):
+            print("-i option detected : " + arg)
             full_url = arg
+            ## STOPPED HERE
             requirementMet = True
         elif opt in ("-d", "--debug"):
             debug=True
@@ -41,6 +42,10 @@ except getopt.GetoptError as e:
     sys.exit(2)
 
 domain = urlparse(full_url).netloc
+
+# Create a directory to store the csv files
+if not os.path.exists("processed"):
+        os.mkdir("processed")
 
 if debug:
     print("Starting processing domain: " +  domain)
@@ -65,9 +70,9 @@ def remove_newlines(serie):
 texts=[]
 
 # Get all the text files in the text directory
-for file in os.listdir("text/" + domain + "/"):
+for file in os.listdir("content/" + domain + "/"):
 
-    filepath= "text/" + domain + "/" + file
+    filepath= "content/" + domain + "/" + file
 
     if debug:
         print("Trying to open file " + filepath)
